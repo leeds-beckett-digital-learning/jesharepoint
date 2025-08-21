@@ -102,7 +102,7 @@ public class TypeMap
   {
     try
     {
-      Class c = getPrimitivePropertyClass( type );
+      Class<?> c = getPrimitivePropertyClass( type );
       if ( c == null ) return null;
       Constructor con = c.getConstructor();
       if ( con == null ) return null;
@@ -127,17 +127,19 @@ public class TypeMap
     return map.get( type );
   }
   
+  @SuppressWarnings( "unchecked" )
   public Class<? extends Entity> getEntityClass( String type )
   {
-    Class<? extends Value> c = map.get( type );
+    Class<? extends ValueWithProperties> c = map.get( type );
     if ( c != null && Entity.class.isAssignableFrom( c ) )
       return (Class<? extends Entity>) c;
     return null;
   }
-  
+   
+  @SuppressWarnings( "unchecked" )
   public Class<? extends Complex> getComplexClass( String type )
   {
-    Class<? extends Value> c = map.get( type );
+    Class<? extends ValueWithProperties> c = map.get( type );
     if ( c != null && Complex.class.isAssignableFrom( c ) )
       return (Class<? extends Complex>) c;
     return null;

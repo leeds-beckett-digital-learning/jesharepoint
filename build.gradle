@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'application'
 apply plugin: 'maven-publish'
 apply plugin: 'signing'
 
@@ -36,12 +35,6 @@ dependencies {
     implementation 'org.apache.httpcomponents:httpclient:4.5.14'
     implementation 'org.reflections:reflections:0.10.2'
 }
-
-run {   
-    systemProperties['org.apache.commons.logging.Log'] = 'org.apache.commons.logging.impl.SimpleLog'
-    systemProperties['org.apache.commons.logging.simplelog.log.org.apache.http.wire'] = 'ERROR'
-}
-
 
 
 signing {

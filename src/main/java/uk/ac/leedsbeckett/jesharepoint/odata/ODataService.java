@@ -338,10 +338,7 @@ public class ODataService
             {
               Constructor collectioncon = odataresponse.valueClass.getConstructor();
               EntityCollection ec = (EntityCollection) collectioncon.newInstance();
-              List<Entity> v = doc.getODataValues();
-              for ( Entity e : v )
-                ec.add( e );
-              odataresponse.setD( (T)ec );
+              typeSafeSetDCollection( odataresponse, ec, doc );
             }
             catch ( NoSuchMethodException | SecurityException | InstantiationException | 
                     IllegalAccessException | IllegalArgumentException | InvocationTargetException ex ) 
@@ -357,7 +354,7 @@ public class ODataService
             Value v = doc.getODataValue();
             if ( !odataresponse.valueClass.isAssignableFrom( v.getClass() ) )
               throw new IOException( "Wrong data type in response." );
-            odataresponse.setD( (T) doc.getODataValue() );
+            typeSafeSetDValue( odataresponse, doc );
           }
           else
           {
@@ -371,6 +368,23 @@ public class ODataService
         }
       }
     }
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  private <T extends Value> void typeSafeSetDValue( ODataResponse<T> odataresponse, XmlDocument doc )
+  {
+    Value v = doc.getODataValue();
+    if ( odataresponse.valueClass.isInstance( v ) )
+      odataresponse.setD( (T)v );
+  }
+  
+  @SuppressWarnings( "unchecked" )
+  private <T extends Value> void typeSafeSetDCollection( ODataResponse<T> odataresponse, EntityCollection ec, XmlDocument doc )
+  {
+    List<Entity> v = doc.getODataValues();
+    for ( Entity e : v )
+        ec.add( e );
+    odataresponse.setD( (T)ec );
   }
   
   /**

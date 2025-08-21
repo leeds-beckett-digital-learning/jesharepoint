@@ -27,8 +27,8 @@ public class ODataResponse<T extends Value>
 {
   public T d = null;
 
-  public final Class valueClass;
-  public final Class subClass;
+  public final Class<?> valueClass;
+  public final Class<?> subClass;
 
   /**
    * Instantiates this class.
@@ -44,7 +44,7 @@ public class ODataResponse<T extends Value>
    * @param valueClass The type of the expected value
    * @param subClass Usually null but if valueClass is collection, the type of objects in the collection.
    */
-  public ODataResponse( Class valueClass, Class subClass )
+  public ODataResponse( Class<?> valueClass, Class<?> subClass )
   {
     this.valueClass = valueClass;
     this.subClass = subClass;

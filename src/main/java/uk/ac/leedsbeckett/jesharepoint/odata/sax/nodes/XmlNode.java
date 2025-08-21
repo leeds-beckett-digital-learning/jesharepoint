@@ -66,6 +66,7 @@ public abstract class XmlNode
     children.add( child );
   }
   
+  @SuppressWarnings( "unchecked" )
   public <T extends XmlNode> T getAncestor( Class<T> c )
   {
     XmlNode current = parent;
@@ -78,6 +79,7 @@ public abstract class XmlNode
     return null;
   }
   
+  @SuppressWarnings( "unchecked" )
   public <T extends XmlNode> List<T> getChildren( Class<T> c )
   {
     ArrayList<T> found = new ArrayList<>();
@@ -89,6 +91,7 @@ public abstract class XmlNode
     return found;
   }
 
+  @SuppressWarnings( "unchecked" )
   public <T extends XmlNode> T getChild( Class<T> c )
   {
     ArrayList<T> found = new ArrayList<>();
