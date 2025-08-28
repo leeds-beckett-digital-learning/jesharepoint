@@ -25,6 +25,8 @@ import org.apache.http.client.CookieStore;
  */
 public interface ODataSettings
 {
+  public boolean isAcceptAnySSLCertificate();
+
   /**
    * HTTP Proxy location or null for direct access
    * @return The required property.

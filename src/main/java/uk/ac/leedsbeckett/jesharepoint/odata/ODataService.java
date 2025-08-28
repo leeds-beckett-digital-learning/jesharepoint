@@ -20,10 +20,17 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -36,11 +43,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.conn.routing.HttpRoutePlanner;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.DefaultProxyRoutePlanner;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -59,7 +68,7 @@ import uk.ac.leedsbeckett.jesharepoint.odata.sax.nodes.XmlDocument;
  * 
  * @author maber01
  */
-public class ODataService
+public class ODataService implements HostnameVerifier
 {
   private static final Logger logger = Logger.getLogger(ODataService.class.getName() );
   
@@ -126,6 +135,21 @@ public class ODataService
       HttpHost host = HttpHost.create( httpsproxyurl );
       routePlanner = new DefaultProxyRoutePlanner( host );
       clientBuilder.setRoutePlanner( routePlanner );
+    }
+    if ( settings.isAcceptAnySSLCertificate() )
+    {
+      logger.log( Level.SEVERE, "Setting up to accept any SSL certificate on sharepoint connection. Development only." );
+      try
+      {
+        SSLContext sslc = new SSLContextBuilder().loadTrustMaterial( 
+                KeyStore.getInstance( "JKS" ), TrustAllStrategy.INSTANCE ).build();
+        clientBuilder.setSSLContext( sslc );
+        clientBuilder.setSSLHostnameVerifier( this );
+      }
+      catch ( NoSuchAlgorithmException | KeyStoreException | KeyManagementException ex )
+      {
+        logger.log( Level.SEVERE, null, ex );
+      }
     }
     clientBuilder.setDefaultCookieStore( cookieStore );
   }
@@ -407,4 +431,10 @@ public class ODataService
     }
     return sb.toString();
   }  
+
+  @Override
+  public boolean verify( String string, SSLSession ssls )
+  {
+    return true;
+  }
 }

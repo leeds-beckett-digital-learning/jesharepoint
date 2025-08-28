@@ -60,6 +60,12 @@ public class SharepointSettings extends Properties implements ODataSettings
     }
   }
   
+  @Override
+  public boolean isAcceptAnySSLCertificate()
+  {
+    return "true".equalsIgnoreCase( getProperty( "AcceptAnySSLCertificate" ) );
+  }
+  
   /**
    * This is an application specific property which ought not be here.
    * @return  The required property.
